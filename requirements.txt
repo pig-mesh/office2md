@@ -1,0 +1,9 @@
+fastapi
+aiofiles
+markitdown
+uvicorn
+openai
+socksio
+PyMuPDF
+python-multipart
+python-dotenv==1.0.1
