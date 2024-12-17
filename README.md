@@ -32,7 +32,18 @@
 docker run -p 8000:8000 pig4cloud/markitdown
 ```
 
-### 2. 使用阿里云百炼平台
+### 2. 使用Gitee AI
+
+```bash
+docker run -d \
+ -p 8000:8000 \
+ -e API_KEY=gitee_ai_key \
+ -e MODEL=InternVL2_5-26B \
+ -e BASE_URL=https://ai.gitee.com/v1 \
+ pig4cloud/markitdown
+```
+
+### 3. 使用阿里云百炼平台
 
 ```bash
 docker run -d \

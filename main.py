@@ -10,13 +10,15 @@ from app.api.endpoints import router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 启动时执行
-    banner_path = Path(__file__).parent / 'banner.txt'
+    current_dir = Path(__file__).parent
+    banner_path = current_dir / 'app' / 'banner.txt'
+    print(f"Looking for banner at: {banner_path.absolute()}")
     try:
         with open(banner_path, 'r', encoding='utf-8') as f:
             banner = f.read()
         print(banner)
     except FileNotFoundError:
-        print("Banner file not found, starting server without banner...")
+        print(f"Banner file not found at {banner_path}, starting server without banner...")
     yield
 
 def create_app() -> FastAPI:
