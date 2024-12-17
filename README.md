@@ -1,6 +1,6 @@
-# Image Text Extraction Service
+# office2md
 
-这是一个基于 FastAPI 的图片文本提取服务，支持智谱 AI 的 GLM-4V 模型和阿里云百炼平台的 Qwen-VL-Max 模型进行图片文本识别。
+这是一个基于 markitdown 的office 转 markdown 服务，支持Gitee AI、智谱 AI 的 GLM-4V 模型和阿里云百炼平台的 Qwen-VL-Max 模型进行图片文本识别。
 
 ## 环境变量说明
 
@@ -57,16 +57,32 @@ docker run -d \
 **响应示例:**
 ```json
 {
-    "new_filename": "1679012345.jpg",
-    "content": "提取的文本内容"
+    "text": "提取的文本内容"
 }
+```
+
+## 源码运行
+
+```
+git clone https://gitee.com/log4j/office2md.git
+
+cd office2md
+
+python3 -m venv venvdev
+
+source venvdev/bin/activate
+
+pip install -r requirements.txt
+
+# 启动服务
+uvicorn main:app --reload
 ```
 
 ## 注意事项
 
 1. 使用前请确保已获取相应平台的 API 密钥
 2. 智谱 AI 和阿里云百炼平台的接口略有不同，请确保使用正确的配置
-3. 上传的图片文件会在处理后自动删除（默认10分钟）
+3. 上传的图片文件会在处理后自动删除（默认5分钟）
 4. 服务默认监听 8000 端口
 
 
