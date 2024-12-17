@@ -11,7 +11,7 @@
 | API_KEY | AI 平台的 API 密钥 | XXXX |
 | BASE_URL | AI 平台的 API 基础 URL | https://open.bigmodel.cn/api/paas/v4 |
 | MODEL | 使用的模型名称 | glm-4v-flash |
-| DELETE_DELAY | 临时文件删除延迟（秒） | 600 |
+| DELETE_DELAY | 临时文件删除延迟（秒） | 300 |
 | PROMPT | 文本提取提示词 | 提取图片中全部的文本，不需要任何推理和总结，只需要原文 |
 
 ### 支持的模型配置
@@ -19,6 +19,10 @@
 #### 智谱 AI
 - MODEL=glm-4v-flash
 - BASE_URL=https://open.bigmodel.cn/api/paas/v4
+
+#### Gitee AI
+- MODEL=InternVL2_5-26B
+- BASE_URL=https://ai.gitee.com/v1
 
 #### 阿里云百炼
 - MODEL=qwen-vl-max
