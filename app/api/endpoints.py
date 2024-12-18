@@ -123,8 +123,8 @@ async def upload_file(
     content = await file.read()
     file_path = await save_upload_file(content, new_filename)
     
-    markitdown = MarkItDown(mlm_client=client, mlm_model=MODEL)
-    result = markitdown.convert(file_path, mlm_prompt=MLM_PROMPT)
+    markitdown = MarkItDown(llm_client=client, llm_model=MODEL)
+    result = markitdown.convert(file_path, llm_prompt=MLM_PROMPT)
     
     # 如果是PDF文件且未提取到文本，则尝试其他方法
     if file_extension == '.pdf' and not result.text_content:

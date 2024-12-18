@@ -60,7 +60,7 @@ docker run -d \
 #### 阿里云百炼
 
 - MODEL=qwen-vl-max
-- BASE_URL=https://dashscope.aliyuncs.com/api/v1
+- BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 
 ## API 接口
 

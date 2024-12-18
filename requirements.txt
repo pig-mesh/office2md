@@ -1,9 +1,9 @@
 fastapi
 aiofiles
-markitdown
 uvicorn
 openai
 socksio
 PyMuPDF
+markitdown==0.0.1a3
 python-multipart
 python-dotenv==1.0.1
