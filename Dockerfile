@@ -1,5 +1,5 @@
 # 使用 Python 官方镜像作为基础镜像
-FROM python:3.13-alpine
+FROM python:3.13
 
 USER root
 
@@ -11,15 +11,12 @@ ARG PROMPT
 ARG FILE_DELETE_DELAY
 
 # 设置环境变量
-ENV API_KEY=${API_KEY}
-ENV BASE_URL=${BASE_URL}
-ENV MODEL=${MODEL}
-ENV PROMPT=${PROMPT}
-ENV FILE_DELETE_DELAY=${FILE_DELETE_DELAY}
-ENV PYTHONUNBUFFERED=1
-
-# Runtime dependency
-RUN apk add --no-cache ffmpeg
+ENV API_KEY=${API_KEY} \
+    BASE_URL=${BASE_URL} \
+    MODEL=${MODEL} \
+    PROMPT=${PROMPT} \
+    FILE_DELETE_DELAY=${FILE_DELETE_DELAY} \
+    PYTHONUNBUFFERED=1
 
 # 设置工作目录
 WORKDIR /app
@@ -27,7 +24,11 @@ WORKDIR /app
 # 复制项目文件到容器中
 COPY . .
 
-RUN pip3 install -r requirements.txt
+# Runtime dependency
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    apt-get clean && \
+    pip3 install -r requirements.txt
 
 # 暴露端口（修改为 8000)
 EXPOSE 8000
