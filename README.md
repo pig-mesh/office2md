@@ -8,7 +8,7 @@
 
 ```bash
 # 内置了GLM-4V-FLASH视觉模型，仅供测试使用
-docker run -p 8000:8000 pig4cloud/markitdown
+docker run -p 8000:8000 registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/markitdown
 ```
 
 ### 2. 使用 Gitee AI
@@ -19,7 +19,7 @@ docker run -d \
  -e API_KEY=gitee_ai_key \
  -e MODEL=InternVL2_5-26B \
  -e BASE_URL=https://ai.gitee.com/v1 \
- pig4cloud/markitdown
+ registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/markitdown
 ```
 
 ### 3. 使用阿里云百炼平台
@@ -30,7 +30,7 @@ docker run -d \
   -e API_KEY=your_aliyun_api_key \
   -e MODEL=qwen-vl-max \
   -e BASE_URL=https://dashscope.aliyuncs.com/api/v1 \
-  pig4cloud/markitdown
+  registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/markitdown
 ```
 
 ## 环境变量说明
