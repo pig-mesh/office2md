@@ -4,8 +4,24 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi import HTTPException
+import logging
+import warnings
 
 from app.api.endpoints import router
+
+# 配置警告过滤
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=ResourceWarning)
+
+# 更多具体的警告过滤
+warnings.filterwarnings("ignore", message=".*swigvarlink.*")
+warnings.filterwarnings("ignore", message=".*unclosed.*SSLSocket.*")
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

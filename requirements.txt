@@ -7,3 +7,4 @@ PyMuPDF
 markitdown==0.0.1a3
 python-multipart
 python-dotenv==1.0.1
+aiomultiprocess==0.9.0
