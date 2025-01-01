@@ -183,18 +183,3 @@ class PDFProcessor:
         finally:
             if pdf_document:
                 pdf_document.close()
-
-async def extract_pdf_text(
-    pdf_path: str,
-    markitdown: MarkItDown,
-    mlm_prompt: str,
-    concurrent_pages: int = 5
-) -> Tuple[bool, str]:
-    """兼容性包装函数"""
-    async with PDFProcessor(concurrent_pages) as processor:
-        return await processor.extract_text(
-            pdf_path,
-            markitdown.llm_client.api_key,
-            mlm_prompt,
-            batch_size=concurrent_pages * 2
-        ) 

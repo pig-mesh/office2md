@@ -17,7 +17,9 @@ from app.config import (
     BASE_URL,
     MODEL,
     FILE_DELETE_DELAY,
-    MLM_PROMPT
+    MLM_PROMPT,
+    PDF_CONCURRENT_LIMIT,
+    PDF_BATCH_SIZE
 )
 from app.utils.file_utils import save_upload_file, delete_files
 
@@ -61,12 +63,12 @@ async def upload_file(
     
     # 如果是PDF文件且未提取到文本，则尝试其他方法
     if file_extension == '.pdf' and not result.text_content:
-        async with PDFProcessor(concurrent_limit=5) as processor:
+        async with PDFProcessor(concurrent_limit=PDF_CONCURRENT_LIMIT) as processor:
             success, text = await processor.extract_text(
                 file_path,
                 client.api_key,
                 MLM_PROMPT,
-                batch_size=10
+                batch_size=PDF_BATCH_SIZE
             )
             if success:
                 result.text_content = text
