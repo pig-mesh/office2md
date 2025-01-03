@@ -64,7 +64,7 @@ docker run -d \
 
 ## API 接口
 
-### 上传图片并提取文本
+### 1. 上传图片并提取文本
 
 **Endpoint:** POST /upload/
 
@@ -82,12 +82,38 @@ docker run -d \
 }
 ```
 
+### 2. 文档图像矫正
+
+**Endpoint:** POST /uvdoc/unwarp
+
+**请求格式:** multipart/form-data
+
+**参数:**
+
+- file: 需要进行展平处理的文档图片文件
+
+**响应格式:** image/png
+
+**说明:**
+
+- 该接口用于处理弯曲变形的文档图片，返回展平后的图片
+- 支持常见图片格式（PNG、JPEG等）
+- 返回的是展平后的PNG格式图片数据
+
+**错误响应:**
+
+```json
+{
+  "detail": "Error message"
+}
+```
+
 ## 源码运行
 
 ```
 git clone https://gitee.com/log4j/office2md.git
 
-cd office2md
+cd office2md 
 
 python3 -m venv venvdev
 

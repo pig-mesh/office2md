@@ -1,5 +1,5 @@
 # 使用更轻量级的 Python 基础镜像
-FROM python:3.13-slim AS builder
+FROM python:3.10-slim AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -17,7 +17,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # 第二阶段：运行环境
-FROM python:3.13-slim
+FROM python:3.10-slim
 
 # 定义构建参数
 ARG API_KEY

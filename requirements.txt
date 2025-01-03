@@ -1,10 +1,14 @@
-fastapi
+fastapi>=0.68.0
 aiofiles
-uvicorn
+uvicorn>=0.15.0
 openai
 socksio
 PyMuPDF
 markitdown==0.0.1a3
-python-multipart
+python-multipart>=0.0.5
 python-dotenv==1.0.1
 aiomultiprocess==0.9.0
+numpy==1.23.4
+opencv_python_headless==4.7.0.68
+torch==1.13.0
+pillow>=8.0.0

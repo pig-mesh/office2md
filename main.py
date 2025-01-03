@@ -7,7 +7,8 @@ from fastapi import HTTPException
 import logging
 import warnings
 
-from app.api.endpoints import router
+from app.api.md import router as md_router
+from app.api.uvdoc import router as uvdoc_router
 
 # 配置警告过滤
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -26,6 +27,9 @@ logging.basicConfig(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 启动时执行
+    from app.api.uvdoc import load_model_fn
+    load_model_fn()  # 加载模型
+    
     current_dir = Path(__file__).parent
     banner_path = current_dir / 'app' / 'banner.txt'
     print(f"Looking for banner at: {banner_path.absolute()}")
@@ -52,7 +56,8 @@ def create_app() -> FastAPI:
     )
 
     # 注册路由
-    app.include_router(router)
+    app.include_router(md_router)
+    app.include_router(uvdoc_router)
 
     @app.exception_handler(HTTPException)
     async def http_exception_handler(request, exc):
