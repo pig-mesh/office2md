@@ -4,7 +4,7 @@ uvicorn>=0.15.0
 openai
 socksio
 PyMuPDF
-markitdown==0.0.1a3
+markitdown==0.0.1a4
 python-multipart>=0.0.5
 python-dotenv==1.0.1
 aiomultiprocess==0.9.0
