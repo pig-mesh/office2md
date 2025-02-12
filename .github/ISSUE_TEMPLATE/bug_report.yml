@@ -1,0 +1,60 @@
+name: Bug 报告
+description: 创建 bug 报告以帮助我们改进
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您花时间填写这份 bug 报告！
+  
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: 描述这个 bug
+      description: 请清晰简洁地描述这个 bug 是什么
+      placeholder: 当我...的时候，出现了...的情况
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 重现步骤
+      description: 请描述重现这个 bug 的步骤
+      placeholder: |
+        1. 进入 '...'
+        2. 点击 '....'
+        3. 滚动到 '....'
+        4. 看到错误
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      description: 请清晰简洁地描述您期望发生的事情
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境信息
+      description: |
+        请提供您的环境信息：
+        - 操作系统
+        - Python 版本
+        - 相关依赖版本
+      placeholder: |
+        - 操作系统: Ubuntu 20.04
+        - Python: 3.8.10
+        - 依赖版本: requirements.txt 中的版本
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 补充信息
+      description: 添加任何其他有关该问题的上下文信息 

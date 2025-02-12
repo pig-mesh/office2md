@@ -1,0 +1,27 @@
+name: 问题咨询
+description: 询问使用相关的问题
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        在提问之前，请确保您已经：
+        1. 搜索过现有的 issues 和 discussions
+        2. 阅读过项目文档
+        3. 查看过相关示例
+
+  - type: textarea
+    id: question
+    attributes:
+      label: 您的问题是什么？
+      description: 请清晰简洁地描述您的问题
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 补充信息
+      description: 提供任何可能有助于我们理解您问题的其他信息
+    validations:
+      required: false 
