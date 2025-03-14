@@ -1,5 +1,5 @@
 # 使用更轻量级的 Python 基础镜像
-FROM python:3.10 AS builder
+FROM python:3.10-slim AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -11,12 +11,23 @@ COPY requirements.txt .
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ffmpeg \
+        build-essential \
         && \
-    pip install --user -r requirements.txt && \
+    pip install --no-cache-dir --user -r requirements.txt && \
     rm -rf /var/lib/apt/lists/*
 
-# 第二阶段：运行环境
-FROM python:3.10
+# 第二阶段：准备应用代码
+FROM python:3.10-slim AS app-prep
+
+WORKDIR /app
+
+# 只复制必要的应用代码
+COPY main.py .
+COPY app/ ./app/
+COPY model/ ./model/
+
+# 第三阶段：最终运行环境
+FROM python:3.10-slim
 
 # 定义构建参数
 ARG API_KEY
@@ -31,7 +42,9 @@ ENV API_KEY=${API_KEY} \
     MODEL=${MODEL} \
     PROMPT=${PROMPT} \
     FILE_DELETE_DELAY=${FILE_DELETE_DELAY} \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
 
 WORKDIR /app
 
@@ -40,16 +53,17 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ffmpeg \
         && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # 从 builder 阶段复制安装好的 Python 包
 COPY --from=builder /root/.local /root/.local
 
+# 从 app-prep 阶段复制应用代码
+COPY --from=app-prep /app /app
+
 # 确保 Python 包在 PATH 中
 ENV PATH=/root/.local/bin:$PATH
-
-# 复制应用代码
-COPY . .
 
 # 暴露端口
 EXPOSE 8000
