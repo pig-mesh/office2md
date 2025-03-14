@@ -57,7 +57,9 @@ class PDFProcessor:
     async def process_page(
         self,
         page: fitz.Page,
+        base_url: str,
         api_key: str,
+        model: str,
         mlm_prompt: str,
         page_num: int
     ) -> Tuple[int, Optional[str]]:
@@ -83,8 +85,8 @@ class PDFProcessor:
                         image_path=temp_img.name,
                         api_key=api_key,
                         mlm_prompt=mlm_prompt,
-                        base_url=BASE_URL,
-                        model=MODEL
+                        base_url=base_url,
+                        model=model
                     )
                     
                     logger.info(f"第 {page_num + 1} 页: 开始OCR识别...")
@@ -123,7 +125,9 @@ class PDFProcessor:
     async def process_batch(
         self,
         pdf_document: fitz.Document,
+        base_url: str,
         api_key: str,
+        model: str,
         mlm_prompt: str,
         start_page: int,
         end_page: int
@@ -133,7 +137,9 @@ class PDFProcessor:
         for page_num in range(start_page, min(end_page, len(pdf_document))):
             task = self.process_page(
                 pdf_document[page_num],
+                base_url,
                 api_key,
+                model,
                 mlm_prompt,
                 page_num
             )
@@ -145,7 +151,9 @@ class PDFProcessor:
     async def extract_text(
         self,
         pdf_path: str,
+        base_url: str,
         api_key: str,
+        model: str,
         mlm_prompt: str,
         batch_size: int = 10
     ) -> Tuple[bool, str]:
@@ -166,7 +174,9 @@ class PDFProcessor:
                 logger.info(f"创建批次 {batch_num}/{total_batches} (页码 {start_page+1}-{end_page})")
                 task = self.process_batch(
                     pdf_document,
+                    base_url,
                     api_key,
+                    model,
                     mlm_prompt,
                     start_page,
                     end_page
