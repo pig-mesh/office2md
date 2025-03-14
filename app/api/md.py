@@ -2,7 +2,8 @@ import os
 import time
 import asyncio
 import logging
-from fastapi import APIRouter, File, UploadFile, status, HTTPException, Form
+import json
+from fastapi import APIRouter, File, UploadFile, status, HTTPException, Form, Body, Depends
 from typing import Dict, Optional
 from openai import OpenAI
 from markitdown import MarkItDown
@@ -36,6 +37,40 @@ class MarkdownResponse(BaseModel):
     message: str
     text: Optional[str] = None
 
+class AiMarkitdownDTO(BaseModel):
+    """AI Markitdown服务的配置参数"""
+    base_url: Optional[str] = ""
+    """自定义OpenAI API基础URL，为空时使用系统配置"""
+    
+    api_key: Optional[str] = ""
+    """自定义OpenAI API密钥，为空时使用系统配置"""
+    
+    model: Optional[str] = ""
+    """自定义OpenAI模型名称，为空时使用系统配置"""
+    
+    prompt: Optional[str] = ""
+    """自定义提示词，为空时使用系统配置"""
+    
+    concurrent_limit: Optional[int] = 5
+    """自定义PDF处理并发限制，控制PDF处理时的并发数量"""
+    
+    batch_size: Optional[int] = 10
+    """自定义PDF批处理大小，控制PDF处理时的批量大小"""
+    
+    delete_delay: Optional[int] = 300
+    """自定义文件删除延迟时间(秒)，控制临时文件的保留时间"""
+
+async def parse_request_json(request: Optional[str] = Form("", description="JSON格式的配置参数，包含API密钥、模型等设置")) -> Optional[AiMarkitdownDTO]:
+    """从表单字段解析JSON对象"""
+    if not request:
+        return None
+    try:
+        data = json.loads(request)
+        return AiMarkitdownDTO(**data)
+    except Exception as e:
+        logger.error(f"Error parsing request JSON: {e}")
+        return None
+
 @router.post("/upload", 
     response_model=MarkdownResponse,
     status_code=status.HTTP_200_OK,
@@ -58,14 +93,16 @@ class MarkdownResponse(BaseModel):
 )
 async def upload_file(
     file: UploadFile = File(..., description="要上传的文件，支持常见图片格式和PDF文件"),
-    base_url: Optional[str] = Form(None, description="自定义OpenAI API基础URL"),
-    api_key: Optional[str] = Form(None, description="自定义OpenAI API密钥"),
-    model: Optional[str] = Form(None, description="自定义OpenAI模型名称"),
-    prompt: Optional[str] = Form(None, description="自定义提示词"),
-    concurrent_limit: Optional[int] = Form(None, description="自定义PDF处理并发限制"),
-    batch_size: Optional[int] = Form(None, description="自定义PDF批处理大小"),
-    delete_delay: Optional[int] = Form(None, description="自定义文件删除延迟时间(秒)")
+    request: Optional[AiMarkitdownDTO] = Depends(parse_request_json)
 ):
+    # 创建一个默认的DTO对象，如果request为None
+    if request is None:
+        request = AiMarkitdownDTO()
+    
+    # 记录请求参数（安全处理API密钥）
+    masked_api_key = "None" if not request.api_key else f"****{request.api_key[-4:]}" if len(request.api_key) > 4 else "****"
+    logger.debug(f"Received request with parameters: base_url={request.base_url}, api_key={masked_api_key}, model={request.model}, prompt_provided={request.prompt != ''}, concurrent_limit={request.concurrent_limit}, batch_size={request.batch_size}, delete_delay={request.delete_delay}")
+    
     timestamp = int(time.time())
     file_extension = os.path.splitext(file.filename)[1].lower()
     new_filename = f"{timestamp}{file_extension}"
@@ -74,17 +111,22 @@ async def upload_file(
     file_path = await save_upload_file(content, new_filename)
     
     # 使用用户提供的参数或默认值
-    used_base_url = base_url or BASE_URL
-    used_api_key = api_key or API_KEY
-    used_model = model or MODEL
-    used_prompt = prompt or MLM_PROMPT
-    used_concurrent_limit = concurrent_limit or PDF_CONCURRENT_LIMIT
-    used_batch_size = batch_size or PDF_BATCH_SIZE
-    used_delete_delay = delete_delay or FILE_DELETE_DELAY
+    used_base_url = request.base_url or BASE_URL
+    used_api_key = request.api_key or API_KEY
+    used_model = request.model or MODEL
+    used_prompt = request.prompt or MLM_PROMPT
+    used_concurrent_limit = request.concurrent_limit or PDF_CONCURRENT_LIMIT
+    used_batch_size = request.batch_size or PDF_BATCH_SIZE
+    used_delete_delay = request.delete_delay or FILE_DELETE_DELAY
     
+    # 处理API密钥显示，只显示最后4位
+    masked_api_key = "None" if not used_api_key else f"****{used_api_key[-4:]}" if len(used_api_key) > 4 else "****"
+    
+    logger.info(f"Processing with parameters: base_url={used_base_url}, api_key={masked_api_key}, model={used_model}, prompt_provided={used_prompt is not None}, concurrent_limit={used_concurrent_limit}, batch_size={used_batch_size}, delete_delay={used_delete_delay}")
+
     # 如果用户提供了自定义参数，创建新的OpenAI客户端
     current_client = client
-    if base_url or api_key:
+    if request.base_url or request.api_key:
         current_client = OpenAI(
             base_url=used_base_url,
             api_key=used_api_key
